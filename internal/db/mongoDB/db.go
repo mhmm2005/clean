@@ -44,3 +44,18 @@ func (db *Database) GetUserDataByName(username string) *models.User {
 		return result
 	}
 }
+
+func (db *Database) GetUsers() []*models.User {
+	var result []*models.User
+	collection := db.Db.Database("udsf").Collection("users")
+	cur, err := collection.Find(context.TODO(), bson.M{})
+	if err != nil {
+		return nil
+	}
+	for cur.Next(context.TODO()) {
+		var k *models.User
+		_ = cur.Decode(&k)
+		result = append(result, k)
+	}
+	return result
+}

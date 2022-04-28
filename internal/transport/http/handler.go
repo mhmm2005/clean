@@ -9,6 +9,7 @@ import (
 type serviceInterface interface {
 	GetHealth() string
 	GetUserDataByName(string) *models.User
+	GetUsers() []*models.User
 	GenerateJWT(string) string
 }
 
@@ -32,7 +33,9 @@ func (h *Handler) mapRoutes() {
 
 	h.Router.GET("/user/:username", JWTAuth(h.GetUserDataByName))
 
-	h.Router.POST("/token", h.GenerateJWT)
+	h.Router.GET("/users", JWTAuth(h.GetUsers))
+
+	h.Router.POST("/token", JWTAuthAdmin(h.GenerateJWT))
 
 }
 
@@ -61,6 +64,13 @@ func (h *Handler) GetUserDataByName(c *gin.Context) {
 	c.JSON(200,
 		gin.H{
 			"user": h.Service.GetUserDataByName(username),
+		})
+}
+
+func (h *Handler) GetUsers(c *gin.Context) {
+	c.JSON(200,
+		gin.H{
+			"users": h.Service.GetUsers(),
 		})
 }
 

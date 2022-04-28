@@ -9,6 +9,7 @@ import (
 
 type storeInterface interface {
 	GetUserDataByName(string) *models.User
+	GetUsers() []*models.User
 }
 
 type Service struct {
@@ -27,6 +28,10 @@ func (s *Service) GetHealth() string {
 
 func (s *Service) GetUserDataByName(id string) *models.User {
 	return s.Store.GetUserDataByName(id)
+}
+
+func (s *Service) GetUsers() []*models.User {
+	return s.Store.GetUsers()
 }
 
 func (s *Service) GenerateJWT(username string) string {
