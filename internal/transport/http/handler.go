@@ -4,6 +4,7 @@ import (
 	"clean/internal/models"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type serviceInterface interface {
@@ -11,6 +12,7 @@ type serviceInterface interface {
 	GetUserDataByName(string) *models.User
 	GetUsers() []*models.User
 	GenerateJWT(string) string
+	GetLogger() *zap.Logger
 }
 
 type Handler struct {
@@ -28,6 +30,8 @@ func NewHandler(service serviceInterface) *Handler {
 }
 
 func (h *Handler) mapRoutes() {
+
+	h.Service.GetLogger().Info("mapHandler called")
 
 	h.Router.GET("/health", JWTAuth(h.GetHealth))
 
@@ -52,6 +56,7 @@ func (h *Handler) Serve() error {
 }
 
 func (h *Handler) GetHealth(c *gin.Context) {
+	h.Service.GetLogger().Info("GetHealth handler")
 	c.JSON(200,
 		gin.H{
 			"health": h.Service.GetHealth(),
@@ -60,6 +65,7 @@ func (h *Handler) GetHealth(c *gin.Context) {
 }
 
 func (h *Handler) GetUserDataByName(c *gin.Context) {
+	h.Service.GetLogger().Info("GetUserDataByName handler")
 	username := c.Param("username")
 	c.JSON(200,
 		gin.H{
@@ -68,6 +74,7 @@ func (h *Handler) GetUserDataByName(c *gin.Context) {
 }
 
 func (h *Handler) GetUsers(c *gin.Context) {
+	h.Service.GetLogger().Info("GetUsers handler")
 	c.JSON(200,
 		gin.H{
 			"users": h.Service.GetUsers(),
@@ -75,6 +82,7 @@ func (h *Handler) GetUsers(c *gin.Context) {
 }
 
 func (h *Handler) GenerateJWT(c *gin.Context) {
+	h.Service.GetLogger().Info("GenerateJWT handler")
 	username := c.PostForm("username")
 	fmt.Println(username)
 	c.JSON(200,

@@ -8,7 +8,6 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-// validateToken - validates an incoming jwt token
 func validateToken(accessToken string) bool {
 	var mySigningKey = []byte("s3kR3tK3y")
 	token, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
@@ -41,7 +40,6 @@ func validateTokenAdmin(accessToken string) bool {
 	return token.Valid
 }
 
-// JWTAuth - a handy middleware function that will provide basic auth around specific endpoints
 func JWTAuth(original func(c *gin.Context)) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")

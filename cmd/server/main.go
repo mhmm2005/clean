@@ -2,6 +2,7 @@ package main
 
 import (
 	"clean/internal/db/mongoDB"
+	Logger "clean/internal/log"
 	"clean/internal/service"
 	httpTransport "clean/internal/transport/http"
 	"fmt"
@@ -10,7 +11,8 @@ import (
 var forever chan bool
 
 func Run() error {
-	db := mongoDB.NewDatabase()
+	log := Logger.NewLogger()
+	db := mongoDB.NewDatabase(log)
 	s := service.NewService(db)
 	h := httpTransport.NewHandler(s)
 
